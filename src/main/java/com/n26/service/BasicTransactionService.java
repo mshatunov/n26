@@ -24,6 +24,11 @@ public class BasicTransactionService implements TransactionService {
     }
 
     @Override
+    public void clearTransactions() {
+        storage.clearTransactions();
+    }
+
+    @Override
     public TransactionAgeType checkTransactionAge(LocalDateTime transactionTimestamp) {
         LocalDateTime now = LocalDateTime.now();
 

@@ -12,6 +12,7 @@ import java.time.LocalDateTime
 
 import static com.n26.controller.TransactionController.TRANSACTIONS_URI
 import static groovy.json.JsonOutput.toJson
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
 @RunWith(SpringRunner.class)
@@ -59,6 +60,14 @@ class TransactionControllerTest extends BaseTest {
 
         int status = response.andReturn().getResponse().getStatus()
         assert status == 422
+    }
+
+    @Test
+    void clearTransactionsSuccess() {
+        ResultActions response = mockMvc.perform(delete(TRANSACTIONS_URI))
+
+        int status = response.andReturn().getResponse().getStatus()
+        assert status == 204
     }
 
 }

@@ -7,5 +7,6 @@ import java.time.LocalDateTime;
 
 public interface TransactionService {
     void postTransaction(Transaction transaction);
+    void clearTransactions();
     TransactionAgeType checkTransactionAge(LocalDateTime transactionTimestamp);
 }

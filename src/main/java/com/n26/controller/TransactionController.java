@@ -6,10 +6,7 @@ import com.n26.domain.TransactionAgeType;
 import com.n26.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +27,12 @@ public class TransactionController {
         Transaction transaction = convertPostTransactionRequestToTransaction(request);
         transactionService.postTransaction(transaction);
         return getResponseStatusForTransactionTime(transaction.getTimestamp());
+    }
+
+    @DeleteMapping
+    @ResponseStatus(NO_CONTENT)
+    public void clearTransactions() {
+        transactionService.clearTransactions();
     }
 
     private ResponseEntity getResponseStatusForTransactionTime(LocalDateTime transactionTimestamp) {
