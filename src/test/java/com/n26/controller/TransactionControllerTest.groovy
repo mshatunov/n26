@@ -8,6 +8,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.ResultActions
 
+import java.time.LocalDateTime
+
 import static com.n26.controller.TransactionController.TRANSACTIONS_URI
 import static groovy.json.JsonOutput.toJson
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -21,11 +23,42 @@ class TransactionControllerTest extends BaseTest {
         ResultActions response = mockMvc.perform(post(TRANSACTIONS_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(["amount"   : "12.3343",
-                                 "timestamp": "2018-07-17T09:59:51.312Z"] as Map)))
+                                 "timestamp": LocalDateTime.now().toString() + 'Z'] as Map)))
 
         int status = response.andReturn().getResponse().getStatus()
-        assert status == 200
+        assert status == 201
     }
 
+    @Test
+    void postTransactionInvalidJson() {
+        ResultActions response = mockMvc.perform(post(TRANSACTIONS_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("invalid json"))
+
+        int status = response.andReturn().getResponse().getStatus()
+        assert status == 400
+    }
+
+    @Test
+    void postTransactionOld() {
+        ResultActions response = mockMvc.perform(post(TRANSACTIONS_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(["amount"   :  "12.3343",
+                                 "timestamp": LocalDateTime.now().minusYears(1).toString() + 'Z'] as Map)))
+
+        int status = response.andReturn().getResponse().getStatus()
+        assert status == 204
+    }
+
+    @Test
+    void postTransactionFuture() {
+        ResultActions response = mockMvc.perform(post(TRANSACTIONS_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(["amount"   :  "12.3343",
+                                 "timestamp": LocalDateTime.now().plusYears(1).toString() + 'Z'] as Map)))
+
+        int status = response.andReturn().getResponse().getStatus()
+        assert status == 422
+    }
 
 }
