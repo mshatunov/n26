@@ -5,15 +5,17 @@ import com.n26.domain.Transaction;
 import com.n26.domain.TransactionAgeType;
 import com.n26.service.TransactionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
 import static com.n26.controller.TransactionController.TRANSACTIONS_URI;
-import static com.n26.controller.converter.TransactionConverter.convertPostTransactionRequestToTransaction;
+import static com.n26.controller.converter.DTOConverter.convertPostTransactionRequestToTransaction;
 import static org.springframework.http.HttpStatus.*;
 
+@Slf4j
 @RestController
 @RequestMapping(TRANSACTIONS_URI)
 @RequiredArgsConstructor
@@ -46,7 +48,8 @@ public class TransactionController {
             case OLD:
                 return new ResponseEntity(NO_CONTENT);
             default:
-                return new ResponseEntity(OK);
+                log.error("Can't process transaction for timestamp", transactionTimestamp);
+                throw new UnsupportedOperationException("Can't process transaction for timestamp " + transactionTimestamp);
         }
     }
 }
