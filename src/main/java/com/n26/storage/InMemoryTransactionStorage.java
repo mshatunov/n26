@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class InMemoryTransactionStorage implements TransactionStorage {
 
-    private final Map<LocalDateTime, StatisticsUnit> storage = new ConcurrentHashMap<>();
+    private final Map<LocalDateTime, StatisticsUnit> storage = new HashMap<>();
 
     @Override
     public void saveTransaction(Transaction transaction) {
