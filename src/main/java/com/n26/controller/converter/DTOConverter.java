@@ -5,16 +5,26 @@ import com.n26.controller.dto.PostTransactionRequest;
 import com.n26.domain.StatisticsUnit;
 import com.n26.domain.Transaction;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
+@Slf4j
 @UtilityClass
 public class DTOConverter {
-    public static Transaction convertPostTransactionRequestToTransaction(PostTransactionRequest request) {
-        return Transaction.builder()
-                .amount(request.getAmount())
-                .timestamp(request.getTimestamp())
-                .build();
+    public static Optional<Transaction> convertPostTransactionRequestToTransaction(PostTransactionRequest request) {
+        try {
+            return Optional.of(Transaction.builder()
+                    .amount(new BigDecimal(request.getAmount()))
+                    .timestamp(LocalDateTime.parse(request.getTimestamp(), DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                    .build());
+        } catch (Exception e) {
+            log.error("Error while parsing ", request);
+            return Optional.empty();
+        }
     }
 
     public static GetStatisticsResponse convertStatisticsToGetStatisticsResponse(StatisticsUnit statisticsUnit) {

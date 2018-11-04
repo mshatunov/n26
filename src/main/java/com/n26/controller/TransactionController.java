@@ -1,11 +1,11 @@
 package com.n26.controller;
 
 import com.n26.controller.dto.PostTransactionRequest;
-import com.n26.domain.Transaction;
 import com.n26.domain.TransactionAgeType;
 import com.n26.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 import static com.n26.controller.TransactionController.TRANSACTIONS_URI;
 import static com.n26.controller.converter.DTOConverter.convertPostTransactionRequestToTransaction;
-import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestController
@@ -22,17 +21,24 @@ import static org.springframework.http.HttpStatus.*;
 public class TransactionController {
     public static final String TRANSACTIONS_URI = "/transactions";
 
+    private static final ResponseEntity UNPROCESSABLE_ENTITY = new ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY);
+    private static final ResponseEntity CREATED = new ResponseEntity(HttpStatus.CREATED);
+    private static final ResponseEntity NO_CONTENT = new ResponseEntity(HttpStatus.NO_CONTENT);
+
     private final TransactionService transactionService;
 
     @PostMapping
     public ResponseEntity postTransaction(@RequestBody PostTransactionRequest request) {
-        Transaction transaction = convertPostTransactionRequestToTransaction(request);
-        transactionService.postTransaction(transaction);
-        return getResponseStatusForTransactionTime(transaction.getTimestamp());
+        return convertPostTransactionRequestToTransaction(request)
+                .map(t -> {
+                    transactionService.postTransaction(t);
+                    return getResponseStatusForTransactionTime(t.getTimestamp());
+                })
+                .orElse(UNPROCESSABLE_ENTITY);
     }
 
     @DeleteMapping
-    @ResponseStatus(NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void clearTransactions() {
         transactionService.clearTransactions();
     }
@@ -42,11 +48,11 @@ public class TransactionController {
                 transactionService.checkTransactionAge(transactionTimestamp);
         switch (transactionAgeType) {
             case CURRENT:
-                return new ResponseEntity(CREATED);
+                return CREATED;
             case FUTURE:
-                return new ResponseEntity(UNPROCESSABLE_ENTITY);
+                return UNPROCESSABLE_ENTITY;
             case OLD:
-                return new ResponseEntity(NO_CONTENT);
+                return NO_CONTENT;
             default:
                 log.error("Can't process transaction for timestamp", transactionTimestamp);
                 throw new UnsupportedOperationException("Can't process transaction for timestamp " + transactionTimestamp);
