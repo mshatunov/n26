@@ -1,6 +1,7 @@
 package com.n26.controller
 
 import com.n26.BaseTest
+import com.n26.configuration.ApplicationProperties
 import com.n26.storage.TransactionStorage
 import org.junit.Before
 import org.junit.Test
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 import static com.n26.controller.StatisticsController.STATISTICS_URI
 import static com.n26.controller.TransactionController.TRANSACTIONS_URI
@@ -27,6 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class StatisticsControllerTest extends BaseTest {
 
     @Autowired
+    ApplicationProperties properties
+
+    @Autowired
     TransactionStorage transactionStorage
 
     @Before
@@ -39,15 +44,15 @@ class StatisticsControllerTest extends BaseTest {
         mockMvc.perform(post(TRANSACTIONS_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(["amount"   : "10",
-                                 "timestamp": LocalDateTime.now().minusSeconds(10).toString() + 'Z'] as Map)))
+                                 "timestamp": LocalDateTime.now(ZoneId.of(properties.getTimezone())).minusSeconds(10).toString() + 'Z'] as Map)))
         mockMvc.perform(post(TRANSACTIONS_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(["amount"   : "20",
-                                 "timestamp": LocalDateTime.now().minusSeconds(20).toString() + 'Z'] as Map)))
+                                 "timestamp": LocalDateTime.now(ZoneId.of(properties.getTimezone())).minusSeconds(20).toString() + 'Z'] as Map)))
         mockMvc.perform(post(TRANSACTIONS_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(["amount"   : "50",
-                                 "timestamp": LocalDateTime.now().minusSeconds(30).toString() + 'Z'] as Map)))
+                                 "timestamp": LocalDateTime.now(ZoneId.of(properties.getTimezone())).minusSeconds(30).toString() + 'Z'] as Map)))
 
         mockMvc.perform(get(STATISTICS_URI))
                 .andExpect(status().is(HttpStatus.OK.value()))
@@ -60,7 +65,7 @@ class StatisticsControllerTest extends BaseTest {
 
     @Test
     void getStatisticsOnePeriodSuccess() {
-        def now = LocalDateTime.now().toString() + 'Z'
+        def now = LocalDateTime.now(ZoneId.of(properties.getTimezone())).toString() + 'Z'
         mockMvc.perform(post(TRANSACTIONS_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(["amount"   : "10",
@@ -85,7 +90,7 @@ class StatisticsControllerTest extends BaseTest {
 
     @Test
     void getStatisticsRoundingSuccess() {
-        def now = LocalDateTime.now().toString() + 'Z'
+        def now = LocalDateTime.now(ZoneId.of(properties.getTimezone())).toString() + 'Z'
         mockMvc.perform(post(TRANSACTIONS_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(["amount"   : "10.12345",

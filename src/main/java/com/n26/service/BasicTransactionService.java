@@ -1,5 +1,6 @@
 package com.n26.service;
 
+import com.n26.configuration.ApplicationProperties;
 import com.n26.domain.Transaction;
 import com.n26.domain.TransactionAgeType;
 import com.n26.storage.TransactionStorage;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import static com.n26.domain.TransactionAgeType.CURRENT;
 import static com.n26.domain.TransactionAgeType.FUTURE;
@@ -17,6 +19,7 @@ import static com.n26.domain.TransactionAgeType.OLD;
 public class BasicTransactionService implements TransactionService {
 
     private final TransactionStorage storage;
+    private final ApplicationProperties properties;
 
     @Override
     public void postTransaction(Transaction transaction) {
@@ -30,7 +33,7 @@ public class BasicTransactionService implements TransactionService {
 
     @Override
     public TransactionAgeType checkTransactionAge(LocalDateTime transactionTimestamp) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of(properties.getTimezone()));
 
         if (transactionTimestamp.isAfter(now)) {
             return FUTURE;
