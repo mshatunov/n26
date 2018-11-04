@@ -14,7 +14,7 @@ import static com.n26.controller.StatisticsController.STATISTICS_URI;
 @RequestMapping(STATISTICS_URI)
 @RequiredArgsConstructor
 public class StatisticsController {
-    public static final String STATISTICS_URI = "/transactions";
+    public static final String STATISTICS_URI = "/statistics";
 
     private final StatisticsService statisticsService;
 

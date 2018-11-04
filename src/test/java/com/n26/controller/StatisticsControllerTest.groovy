@@ -51,10 +51,10 @@ class StatisticsControllerTest extends BaseTest {
 
         mockMvc.perform(get(STATISTICS_URI))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(jsonPath('$.sum', equalTo(80D)))
-                .andExpect(jsonPath('$.avg', equalTo(26.67D)))
-                .andExpect(jsonPath('$.max', equalTo(50D)))
-                .andExpect(jsonPath('$.min', equalTo(10D)))
+                .andExpect(jsonPath('$.sum', equalTo('80.00')))
+                .andExpect(jsonPath('$.avg', equalTo('26.67')))
+                .andExpect(jsonPath('$.max', equalTo('50.00')))
+                .andExpect(jsonPath('$.min', equalTo('10.00')))
                 .andExpect(jsonPath('$.count', equalTo(3)))
     }
 
@@ -76,10 +76,10 @@ class StatisticsControllerTest extends BaseTest {
 
         mockMvc.perform(get(STATISTICS_URI))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(jsonPath('$.sum', equalTo(80D)))
-                .andExpect(jsonPath('$.avg', equalTo(26.67D)))
-                .andExpect(jsonPath('$.max', equalTo(50D)))
-                .andExpect(jsonPath('$.min', equalTo(10D)))
+                .andExpect(jsonPath('$.sum', equalTo('80.00')))
+                .andExpect(jsonPath('$.avg', equalTo('26.67')))
+                .andExpect(jsonPath('$.max', equalTo('50.00')))
+                .andExpect(jsonPath('$.min', equalTo('10.00')))
                 .andExpect(jsonPath('$.count', equalTo(3)))
     }
 
@@ -101,10 +101,10 @@ class StatisticsControllerTest extends BaseTest {
 
         mockMvc.perform(get(STATISTICS_URI))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(jsonPath('$.sum', equalTo(80.70D)))
-                .andExpect(jsonPath('$.avg', equalTo(26.90D)))
-                .andExpect(jsonPath('$.max', equalTo(50.35D)))
-                .andExpect(jsonPath('$.min', equalTo(10.12D)))
+                .andExpect(jsonPath('$.sum', equalTo('80.70')))
+                .andExpect(jsonPath('$.avg', equalTo('26.90')))
+                .andExpect(jsonPath('$.max', equalTo('50.35')))
+                .andExpect(jsonPath('$.min', equalTo('10.12')))
                 .andExpect(jsonPath('$.count', equalTo(3)))
     }
 

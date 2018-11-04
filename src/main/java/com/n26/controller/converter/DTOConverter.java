@@ -20,13 +20,17 @@ public class DTOConverter {
     public static GetStatisticsResponse convertStatisticsToGetStatisticsResponse(StatisticsUnit statisticsUnit) {
         return GetStatisticsResponse.builder()
                 .sum(statisticsUnit.getSum()
-                        .setScale(2, BigDecimal.ROUND_HALF_UP))
-                .avg(statisticsUnit.getCount() == 0 ? BigDecimal.ZERO : statisticsUnit.getSum()
-                        .divide(BigDecimal.valueOf(statisticsUnit.getCount()), 2, BigDecimal.ROUND_HALF_UP))
+                        .setScale(2, BigDecimal.ROUND_HALF_UP)
+                        .toString())
+                .avg(statisticsUnit.getCount() == 0 ? "0.00" : statisticsUnit.getSum()
+                        .divide(BigDecimal.valueOf(statisticsUnit.getCount()), 2, BigDecimal.ROUND_HALF_UP)
+                        .toString())
                 .max(statisticsUnit.getMax()
-                        .setScale(2, BigDecimal.ROUND_HALF_UP))
+                        .setScale(2, BigDecimal.ROUND_HALF_UP)
+                        .toString())
                 .min(statisticsUnit.getMin()
-                        .setScale(2, BigDecimal.ROUND_HALF_UP))
+                        .setScale(2, BigDecimal.ROUND_HALF_UP)
+                        .toString())
                 .count(statisticsUnit.getCount())
                 .build();
     }
