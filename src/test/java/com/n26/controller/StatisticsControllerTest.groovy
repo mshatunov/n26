@@ -51,10 +51,10 @@ class StatisticsControllerTest extends BaseTest {
 
         mockMvc.perform(get(STATISTICS_URI))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(jsonPath('$.sum', equalTo(80)))
+                .andExpect(jsonPath('$.sum', equalTo(80D)))
                 .andExpect(jsonPath('$.avg', equalTo(26.67D)))
-                .andExpect(jsonPath('$.max', equalTo(50)))
-                .andExpect(jsonPath('$.min', equalTo(10)))
+                .andExpect(jsonPath('$.max', equalTo(50D)))
+                .andExpect(jsonPath('$.min', equalTo(10D)))
                 .andExpect(jsonPath('$.count', equalTo(3)))
     }
 
@@ -76,10 +76,35 @@ class StatisticsControllerTest extends BaseTest {
 
         mockMvc.perform(get(STATISTICS_URI))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(jsonPath('$.sum', equalTo(80)))
+                .andExpect(jsonPath('$.sum', equalTo(80D)))
                 .andExpect(jsonPath('$.avg', equalTo(26.67D)))
-                .andExpect(jsonPath('$.max', equalTo(50)))
-                .andExpect(jsonPath('$.min', equalTo(10)))
+                .andExpect(jsonPath('$.max', equalTo(50D)))
+                .andExpect(jsonPath('$.min', equalTo(10D)))
+                .andExpect(jsonPath('$.count', equalTo(3)))
+    }
+
+    @Test
+    void getStatisticsRoundingSuccess() {
+        def now = LocalDateTime.now().toString() + 'Z'
+        mockMvc.perform(post(TRANSACTIONS_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(["amount"   : "10.12345",
+                                 "timestamp": now] as Map)))
+        mockMvc.perform(post(TRANSACTIONS_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(["amount"   : "20.23456",
+                                 "timestamp": now] as Map)))
+        mockMvc.perform(post(TRANSACTIONS_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(["amount"   : "50.34567",
+                                 "timestamp": now] as Map)))
+
+        mockMvc.perform(get(STATISTICS_URI))
+                .andExpect(status().is(HttpStatus.OK.value()))
+                .andExpect(jsonPath('$.sum', equalTo(80.70D)))
+                .andExpect(jsonPath('$.avg', equalTo(26.90D)))
+                .andExpect(jsonPath('$.max', equalTo(50.35D)))
+                .andExpect(jsonPath('$.min', equalTo(10.12D)))
                 .andExpect(jsonPath('$.count', equalTo(3)))
     }
 

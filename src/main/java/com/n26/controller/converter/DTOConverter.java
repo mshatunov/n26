@@ -19,11 +19,14 @@ public class DTOConverter {
 
     public static GetStatisticsResponse convertStatisticsToGetStatisticsResponse(StatisticsUnit statisticsUnit) {
         return GetStatisticsResponse.builder()
-                .sum(statisticsUnit.getSum())
+                .sum(statisticsUnit.getSum()
+                        .setScale(2, BigDecimal.ROUND_HALF_UP))
                 .avg(statisticsUnit.getCount() == 0 ? BigDecimal.ZERO : statisticsUnit.getSum()
-                        .divide(BigDecimal.valueOf(statisticsUnit.getCount()), 2, 2))
-                .max(statisticsUnit.getMax())
-                .min(statisticsUnit.getMin())
+                        .divide(BigDecimal.valueOf(statisticsUnit.getCount()), 2, BigDecimal.ROUND_HALF_UP))
+                .max(statisticsUnit.getMax()
+                        .setScale(2, BigDecimal.ROUND_HALF_UP))
+                .min(statisticsUnit.getMin()
+                        .setScale(2, BigDecimal.ROUND_HALF_UP))
                 .count(statisticsUnit.getCount())
                 .build();
     }
