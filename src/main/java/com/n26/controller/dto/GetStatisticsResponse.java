@@ -14,5 +14,5 @@ public class GetStatisticsResponse {
     private String avg;
     private String max;
     private String min;
-    private int count;
+    private long count;
 }

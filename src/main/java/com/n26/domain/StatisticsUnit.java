@@ -15,5 +15,5 @@ public class StatisticsUnit {
     private BigDecimal sum;
     private BigDecimal max;
     private BigDecimal min;
-    private int count;
+    private long count;
 }
